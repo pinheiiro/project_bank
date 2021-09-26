@@ -40,19 +40,26 @@ router.post('/', validation(users), (req, res) => {
 // Rota para realizar saque
 router.post('/withdraw', operation(users), (req, res) => {
     const {user} = req;
-    const {value, description} = req.body;
-    const type = "deposit"
+    const {amount} = req.body;
+    const value = Number(amount);
+    const type = "debit";
     const transaction = new Service();
-    const details = transaction.credit(user, value, description, type);
-    res.json(details);
+    const details = transaction.debit(user, value, type);
+    res.status(200).json(details);
 });
 
 // Rota para realizar depósito
 router.post('/deposit', operation(users), (req, res) => {
     const {user} = req;
-    res.json(user);
+    const {amount, description} = req.body;
+    const value = Number(amount);
+    const type = "credit";
+    const transaction = new Service();
+    const details = transaction.credit(user, value, description, type);
+    res.json(details);
 });
 
+//Rota para mostrar o extrato do cliente
 router.get('/extract', operation(users), (req, res) => {
     const {user} = req;
     res.status(200).json(user.statement);
