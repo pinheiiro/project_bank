@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
         cpf: user.cpf,
         saldo: user.saldo,
     }));
-    res.json(information);
+    res.status(200).json(information);
 });
 
 // Rota para criação de conta
@@ -34,7 +34,7 @@ router.post('/', validation(users), (req, res) => {
     const saldo = 0;
     const statement = [];
     users.push({id, name, cpf, saldo, statement});
-    res.json({message: "successfully", id, name, cpf, saldo});
+    res.status(200).json({message: "successfully", id, name, cpf, saldo});
 });
 
 // Rota para realizar saque
@@ -56,13 +56,29 @@ router.post('/deposit', operation(users), (req, res) => {
     const type = "credit";
     const transaction = new Service();
     const details = transaction.credit(user, value, description, type);
-    res.json(details);
+    res.status(200).json(details);
 });
 
 //Rota para mostrar o extrato do cliente
 router.get('/extract', operation(users), (req, res) => {
     const {user} = req;
     res.status(200).json(user.statement);
+});
+
+// Rota para atualizar dados da conta
+router.put('/update', operation(users), (req, res) => {
+    const {user} = req;
+    const {name} = req.body;
+    user.name = name;
+    res.status(200).send("Informações atualizadas");
+});
+
+// Rota para encerrar conta do usuário
+router.delete('/remove', operation(users), (req, res) => {
+    const {user} = req;
+    const found = users.findIndex((i) => i === user);
+    users.splice(found);
+    res.status(200).send("Conta encerrada com sucesso !");
 });
 
 module.exports = router;

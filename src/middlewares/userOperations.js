@@ -1,8 +1,5 @@
 
 // Middleware para verificar se o usuário tem cadastro para realizar ações no banco
-
-const { request } = require("express");
-
 function operation(users) {
     return (req, res, next) => {
         const {cpf} = req.headers;
@@ -12,7 +9,7 @@ function operation(users) {
             req.user = user;
             next();
         } else {
-            res.status(404).send("Usuário inapto de realizar operação !");
+            res.status(400).send("Usuário inapto de realizar operação !");
         }
     }
 }
